@@ -1,8 +1,6 @@
 streamlit
 google-generativeai
 langchain
-speechrecognition
-pandas
-pydub
-openai-whisper
 gtts
+speechrecognition
+pyaudio
