@@ -4,17 +4,21 @@ from langchain.chains import LLMChain
 from transformers import AutoModelForCausalLM, AutoTokenizer
 import torch
 from langchain.llms.base import LLM
-from typing import Optional, List
+from typing import Optional, List, Any
+from pydantic.v1 import BaseModel, Extra
 
 # Custom LLM wrapper for Transformers
-class TransformersLLM(LLM):
-    model: AutoModelForCausalLM
-    tokenizer: AutoTokenizer
+class TransformersLLM(LLM, BaseModel):
+    model: Any  # Using Any to avoid strict type checking issues with Pydantic
+    tokenizer: Any
 
-    def __init__(self, model, tokenizer):
-        super().__init__()
-        self.model = model
-        self.tokenizer = tokenizer
+    class Config:
+        """Configuration for Pydantic model"""
+        arbitrary_types_allowed = True  # Allow arbitrary types like PyTorch models
+        extra = Extra.allow  # Allow extra kwargs if needed
+
+    def __init__(self, model, tokenizer, **kwargs):
+        super().__init__(model=model, tokenizer=tokenizer, **kwargs)
 
     def _call(self, prompt: str, stop: Optional[List[str]] = None) -> str:
         inputs = self.tokenizer(prompt, return_tensors="pt", truncation=True, max_length=512)
