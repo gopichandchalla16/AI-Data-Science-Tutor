@@ -1,15 +1,14 @@
 import streamlit as st
 import google.generativeai as genai
 from langchain.prompts import PromptTemplate
-from langchain.chains import LLMChain
+from langchain.chains import ConversationChain
+from langchain.memory import ConversationBufferMemory
 from langchain.llms.base import LLM
-import time
 from gtts import gTTS
-import speech_recognition as sr
 import os
 
 # Set Streamlit Page Config
-st.set_page_config(page_title="AI Data Science Guru", page_icon="🚀", layout="wide")
+st.set_page_config(page_title="AI Data Science Tutor", page_icon="🚀", layout="wide")
 
 # Custom CSS for Styling
 st.markdown("""
@@ -32,7 +31,7 @@ except KeyError:
 class GeminiLLM(LLM):
     def _call(self, prompt: str, stop=None):
         try:
-            model = genai.GenerativeModel("gemini-1.5-flash")
+            model = genai.GenerativeModel("gemini-1.5-pro")
             response = model.generate_content(prompt)
             return response.text if response and hasattr(response, "text") else "⚠️ No response from Gemini API."
         except Exception as e:
@@ -50,17 +49,33 @@ llm = GeminiLLM()
 
 # Define the Prompt Template
 prompt_template = PromptTemplate(
-    input_variables=["question"],
-    template="You're an expert AI tutor. Answer the following question in detail:\n\nQuestion: {question}\n\nAnswer:"
+    input_variables=["history", "input"],
+    template="""
+    You are an expert AI Data Science Tutor. Your task is to resolve data science doubts of the user. 
+    Keep your responses concise, accurate, and relevant to data science.
+
+    Conversation History:
+    {history}
+
+    User: {input}
+    AI Tutor:
+    """
 )
 
-# Create LangChain LLMChain
-chain = LLMChain(llm=llm, prompt=prompt_template)
+# Initialize Conversation Memory
+memory = ConversationBufferMemory()
+
+# Create LangChain ConversationChain
+conversation = ConversationChain(
+    llm=llm,
+    prompt=prompt_template,
+    memory=memory
+)
 
 # Function to Generate AI Response
-def generate_response(question):
+def generate_response(user_input):
     try:
-        response = chain.run(question)
+        response = conversation.run(input=user_input)
         return response
     except Exception as e:
         return f"⚠️ Error generating response: {str(e)}"
@@ -72,41 +87,40 @@ def text_to_speech(text):
     os.system("start response.mp3")  # Play the audio file (works on Windows)
     # For macOS/Linux, use: os.system("afplay response.mp3")
 
-# Function to convert speech to text
-def speech_to_text():
-    recognizer = sr.Recognizer()
-    with sr.Microphone() as source:
-        st.write("Listening... Speak now!")
-        audio = recognizer.listen(source)
-        try:
-            text = recognizer.recognize_google(audio)
-            return text
-        except sr.UnknownValueError:
-            return "Could not understand audio"
-        except sr.RequestError:
-            return "API unavailable"
-
 # Main Streamlit UI
 def main():
-    st.markdown('<div class="main-title">AI Data Science Guru</div>', unsafe_allow_html=True)
+    st.markdown('<div class="main-title">AI Data Science Tutor</div>', unsafe_allow_html=True)
     st.markdown("<p style='text-align: center; color: #7f8c8d;'>Your AI-powered Data Science tutor! 🚀</p>", unsafe_allow_html=True)
 
-    # Input Box
-    user_question = st.text_area("Ask Your Guru:", placeholder="E.g. What is logistic regression?", height=150)
+    # Initialize session state for conversation history
+    if "conversation_history" not in st.session_state:
+        st.session_state.conversation_history = []
 
-    # Speech Input Button
-    if st.button("Speak Your Question 🎤"):
-        user_question = speech_to_text()
-        st.text_area("Ask Your Guru:", value=user_question, height=150)
+    # Display Conversation History
+    st.markdown("### Conversation History")
+    for exchange in st.session_state.conversation_history:
+        st.markdown(f"**User:** {exchange['user']}")
+        st.markdown(f"**AI Tutor:** {exchange['ai']}")
+        st.markdown("---")
+
+    # Input Box
+    user_input = st.text_input("Ask Your Data Science Doubt:", placeholder="E.g. What is logistic regression?")
 
     # Button to Generate Response
-    if st.button("Chat Now!"):
-        if user_question.strip():
+    if st.button("Ask"):
+        if user_input.strip():
             with st.spinner("Thinking... 💭"):
-                response = generate_response(user_question)
-                st.markdown(f'<div class="answer-box"><b>Guru Says:</b><br>{response}</div>', unsafe_allow_html=True)
+                # Generate AI response
+                ai_response = generate_response(user_input)
+                # Update conversation history
+                st.session_state.conversation_history.append({"user": user_input, "ai": ai_response})
+                # Display AI response
+                st.markdown(f'<div class="answer-box"><b>AI Tutor Says:</b><br>{ai_response}</div>', unsafe_allow_html=True)
                 # Convert AI response to speech
-                text_to_speech(response)
+                try:
+                    text_to_speech(ai_response)
+                except Exception as e:
+                    st.warning("Text-to-speech is not supported in this environment.")
         else:
             st.warning("⚠️ Please enter a question.")
 
