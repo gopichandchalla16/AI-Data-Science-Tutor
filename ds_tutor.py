@@ -5,36 +5,16 @@ from langchain.chains import LLMChain
 from langchain.llms.base import LLM
 import time
 
-# Set page configuration
+# Set Streamlit Page Config
 st.set_page_config(page_title="AI Data Science Guru", page_icon="🚀", layout="wide")
 
-# Custom CSS for better UI experience
+# Custom CSS for Styling
 st.markdown("""
     <style>
-    .main-title {
-        font-size: 2.8em;
-        color: #2ecc71;
-        text-align: center;
-        font-weight: bold;
-        font-family: 'Arial', sans-serif;
-    }
-    .answer-box {
-        border: 2px solid #2ecc71;
-        border-radius: 12px;
-        padding: 15px;
-        background: linear-gradient(135deg, #e3f2fd, #b8e994);
-        box-shadow: 0 4px 8px rgba(0,0,0,0.15);
-        margin-top: 20px;
-    }
-    .stButton>button {
-        background-color: #3498db;
-        color: white;
-        font-size: 16px;
-        padding: 10px 20px;
-    }
-    .stButton>button:hover {
-        background-color: #2980b9;
-    }
+    .main-title { font-size: 2.8em; color: #2ecc71; text-align: center; font-weight: bold; font-family: 'Arial', sans-serif; }
+    .answer-box { border: 2px solid #2ecc71; border-radius: 12px; padding: 15px; background: linear-gradient(135deg, #e3f2fd, #b8e994); box-shadow: 0 4px 8px rgba(0,0,0,0.15); margin-top: 20px; }
+    .stButton>button { background-color: #3498db; color: white; font-size: 16px; padding: 10px 20px; }
+    .stButton>button:hover { background-color: #2980b9; }
     </style>
 """, unsafe_allow_html=True)
 
@@ -45,17 +25,15 @@ except KeyError:
     st.error("⚠️ Please set the GEMINI_API_KEY in Streamlit secrets to proceed!")
     st.stop()
 
-# Define Gemini Model
-model = genai.GenerativeModel("gemini-1.5-flash")
-
-# Custom LLM Wrapper for LangChain
+# Custom LLM Wrapper for Gemini API
 class GeminiLLM(LLM):
-    def __init__(self, model):
-        self.model = model
-
     def _call(self, prompt: str, stop=None):
-        response = self.model.generate_content(prompt)
-        return response.text
+        try:
+            model = genai.GenerativeModel("gemini-1.5-flash")
+            response = model.generate_content(prompt)
+            return response.text if response and hasattr(response, "text") else "⚠️ No response from Gemini API."
+        except Exception as e:
+            return f"⚠️ Error generating response: {str(e)}"
 
     def predict(self, prompt: str):
         return self._call(prompt)
@@ -65,7 +43,7 @@ class GeminiLLM(LLM):
         return "Gemini"
 
 # Initialize Gemini LLM
-llm = GeminiLLM(model)
+llm = GeminiLLM()
 
 # Define the Prompt Template
 prompt_template = PromptTemplate(
@@ -76,7 +54,7 @@ prompt_template = PromptTemplate(
 # Create LangChain LLMChain
 chain = LLMChain(llm=llm, prompt=prompt_template)
 
-# Function to generate AI response
+# Function to Generate AI Response
 def generate_response(question):
     try:
         response = chain.run(question)
@@ -92,7 +70,7 @@ def main():
     # Input Box
     user_question = st.text_area("Ask Your Guru:", placeholder="E.g. What is logistic regression?", height=150)
 
-    # Buttons
+    # Button
     if st.button("Chat Now!"):
         if user_question.strip():
             with st.spinner("Thinking... 💭"):
