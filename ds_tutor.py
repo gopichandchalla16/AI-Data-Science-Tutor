@@ -96,16 +96,23 @@ def main():
     # Initialize session state for conversation history
     if "conversation_history" not in st.session_state:
         st.session_state.conversation_history = []
+        # AI starts the conversation
+        ai_greeting = "Hello! I'm your AI Data Science Tutor. What topic would you like to learn about today?"
+        st.session_state.conversation_history.append({"user": "", "ai": ai_greeting})
+        # Speak the greeting
+        text_to_speech(ai_greeting)
 
     # Display Conversation History
     st.markdown("### Conversation History")
     for exchange in st.session_state.conversation_history:
-        st.markdown(f"**User:** {exchange['user']}")
-        st.markdown(f"**AI Tutor:** {exchange['ai']}")
+        if exchange["user"]:  # Display user input if it exists
+            st.markdown(f"**You:** {exchange['user']}")
+        if exchange["ai"]:  # Display AI response
+            st.markdown(f"**AI Tutor:** {exchange['ai']}")
         st.markdown("---")
 
     # Input Box
-    user_input = st.text_input("Ask Your Data Science Doubt:", placeholder="E.g. What is logistic regression?")
+    user_input = st.text_input("Your Question:", placeholder="E.g. What is logistic regression?")
 
     # Button to Generate Response
     if st.button("Ask"):
