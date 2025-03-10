@@ -8,7 +8,6 @@ import pandas as pd
 import PyPDF2
 import os
 from gtts import gTTS
-import speech_recognition as sr
 
 # Set Streamlit Page Config
 st.set_page_config(page_title="AI Data Science Guru", page_icon="🚀", layout="wide")
@@ -89,20 +88,6 @@ def text_to_speech(text):
     tts.save("response.mp3")
     os.system("start response.mp3")
 
-# Function to convert speech to text
-def speech_to_text():
-    recognizer = sr.Recognizer()
-    with sr.Microphone() as source:
-        st.write("Listening...")
-        audio = recognizer.listen(source)
-        try:
-            text = recognizer.recognize_google(audio)
-            return text
-        except sr.UnknownValueError:
-            return "Could not understand audio"
-        except sr.RequestError:
-            return "API unavailable"
-
 # Main Streamlit UI
 def main():
     st.markdown('<div class="main-title">AI Data Science Guru</div>', unsafe_allow_html=True)
@@ -118,18 +103,17 @@ def main():
     # Input Box
     user_question = st.text_area("Ask Your Guru:", placeholder="E.g. What is logistic regression?", height=150)
 
-    # Speech Input
-    if st.button("Use Microphone"):
-        user_question = speech_to_text()
-        st.text_area("Ask Your Guru:", value=user_question, height=150)
-
     # Button
     if st.button("Chat Now!"):
         if user_question.strip():
             with st.spinner("Thinking... 💭"):
                 response = generate_response(user_question, context)
                 st.markdown(f'<div class="answer-box"><b>Guru Says:</b><br>{response}</div>', unsafe_allow_html=True)
-                text_to_speech(response)
+                # Text-to-speech only works locally
+                try:
+                    text_to_speech(response)
+                except Exception as e:
+                    st.warning("Text-to-speech is not supported in this environment.")
         else:
             st.warning("⚠️ Please enter a question.")
 
