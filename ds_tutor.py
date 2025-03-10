@@ -3,83 +3,144 @@ from langchain.prompts import PromptTemplate
 from langchain.chains import LLMChain
 from transformers import AutoModelForCausalLM, AutoTokenizer
 import torch
+from langchain.llms.base import LLM
+from typing import Optional, List
+
+# Custom LLM wrapper for Transformers
+class TransformersLLM(LLM):
+    model: AutoModelForCausalLM
+    tokenizer: AutoTokenizer
+
+    def __init__(self, model, tokenizer):
+        super().__init__()
+        self.model = model
+        self.tokenizer = tokenizer
+
+    def _call(self, prompt: str, stop: Optional[List[str]] = None) -> str:
+        inputs = self.tokenizer(prompt, return_tensors="pt", truncation=True, max_length=512)
+        with torch.no_grad():
+            outputs = self.model.generate(
+                inputs["input_ids"],
+                max_length=150,
+                temperature=0.7,
+                top_p=0.9,
+                do_sample=True
+            )
+        return self.tokenizer.decode(outputs[0], skip_special_tokens=True)
+
+    @property
+    def _llm_type(self) -> str:
+        return "transformers"
 
 # Set page configuration
-st.set_page_config(page_title="AI Data Science Tutor", page_icon="📊", layout="wide")
+st.set_page_config(page_title="AI Data Science Mentor", page_icon="🤓", layout="wide")
 
-# Title and description
-st.title("AI Data Science Tutor")
+# Custom CSS for better UI
 st.markdown("""
-Welcome to your personal Data Science Tutor! Ask me anything about data science, machine learning, statistics, or coding, and I'll do my best to help you learn.
-""")
+    <style>
+    .main-title {
+        font-size: 2.5em;
+        color: #1f77b4;
+        text-align: center;
+        margin-bottom: 0.5em;
+    }
+    .sidebar-header {
+        font-size: 1.5em;
+        color: #ff7f0e;
+    }
+    .question-box {
+        border: 2px solid #d3d3d3;
+        border-radius: 10px;
+        padding: 10px;
+        background-color: #f9f9f9;
+    }
+    .answer-box {
+        border: 2px solid #1f77b4;
+        border-radius: 10px;
+        padding: 15px;
+        background-color: #e6f3ff;
+        margin-top: 20px;
+    }
+    </style>
+""", unsafe_allow_html=True)
 
-# Load the model and tokenizer
+# Load model and tokenizer
 @st.cache_resource
 def load_model():
-    model_name = "distilgpt2"  # Lightweight model for demo purposes
+    model_name = "distilgpt2"
     tokenizer = AutoTokenizer.from_pretrained(model_name)
     model = AutoModelForCausalLM.from_pretrained(model_name)
     return tokenizer, model
 
 tokenizer, model = load_model()
 
-# Define the prompt template for LangChain
+# Initialize custom LLM and chain
+llm = TransformersLLM(model=model, tokenizer=tokenizer)
 prompt_template = PromptTemplate(
     input_variables=["question"],
     template="""
-    You are an expert data science tutor. Provide a clear, concise, and accurate answer to the following question. Use examples where helpful.
+    You are an expert data science mentor. Provide a clear, concise, and accurate answer to the following question. Use examples where helpful.
 
     Question: {question}
 
     Answer:
     """
 )
+chain = LLMChain(llm=llm, prompt=prompt_template)
 
 # Function to generate a response
 def generate_response(question):
-    # Tokenize input
-    inputs = tokenizer(question, return_tensors="pt", truncation=True, max_length=512)
-    
-    # Generate output with the model
-    with torch.no_grad():
-        outputs = model.generate(
-            inputs["input_ids"],
-            max_length=150,
-            num_return_sequences=1,
-            temperature=0.7,
-            top_p=0.9,
-            do_sample=True
-        )
-    
-    # Decode the response
-    raw_response = tokenizer.decode(outputs[0], skip_special_tokens=True)
-    
-    # Use LangChain to structure the response
-    chain = LLMChain(llm=None, prompt=prompt_template)  # We'll manually inject the response
-    formatted_response = prompt_template.format(question=question) + raw_response
-    return formatted_response
+    try:
+        response = chain.run(question)
+        return response
+    except Exception as e:
+        return f"Sorry, I encountered an error: {str(e)}. Please try again!"
 
-# Streamlit UI
+# Main UI
 def main():
-    # Input form
-    with st.form(key="question_form"):
-        user_question = st.text_area("Ask your data science question here:", height=100)
-        submit_button = st.form_submit_button(label="Get Answer")
+    # Title
+    st.markdown('<div class="main-title">AI Data Science Mentor</div>', unsafe_allow_html=True)
+    st.write("Ask me anything about data science, and I’ll guide you with clear, practical answers!")
 
-    # Process the question and display the answer
-    if submit_button and user_question:
-        with st.spinner("Thinking..."):
-            response = generate_response(user_question)
-            st.subheader("Answer")
-            st.write(response)
-    
-    # Sidebar with examples
-    st.sidebar.header("Example Questions")
+    # Sidebar with tips and examples
+    st.sidebar.markdown('<div class="sidebar-header">Tips & Examples</div>', unsafe_allow_html=True)
     st.sidebar.write("""
-    - "What is the difference between supervised and unsupervised learning?"
-    - "How does a decision tree work?"
-    - "Explain the bias-variance tradeoff with an example."
+    **Tips:**
+    - Be specific for better answers!
+    - Ask about concepts, code, or tools.
+
+    **Example Questions:**
+    - "Explain linear regression with an example."
+    - "How do I handle missing data in Python?"
+    - "What’s the difference between overfitting and underfitting?"
     """)
+    st.sidebar.image("https://via.placeholder.com/150", caption="Data Science Rocks!")
+
+    # Question input
+    with st.form(key="question_form"):
+        user_question = st.text_area(
+            "Your Question:",
+            height=120,
+            placeholder="Type your data science question here...",
+            key="question_input",
+            help="Ask anything from basic stats to advanced ML!"
+        )
+        col1, col2 = st.columns([1, 5])
+        with col1:
+            submit_button = st.form_submit_button(label="Ask Now", use_container_width=True)
+        with col2:
+            clear_button = st.form_submit_button(label="Clear", use_container_width=True)
+
+    # Handle submission and clear
+    if submit_button and user_question:
+        with st.spinner("Mentoring in progress..."):
+            response = generate_response(user_question)
+            st.markdown('<div class="answer-box">', unsafe_allow_html=True)
+            st.subheader("Your Answer")
+            st.write(response)
+            st.markdown('</div>', unsafe_allow_html=True)
+    elif clear_button:
+        st.session_state.question_input = ""
 
 if __name__ == "__main__":
     main()
