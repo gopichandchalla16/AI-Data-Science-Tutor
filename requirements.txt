@@ -1,6 +1,8 @@
 streamlit
 google-generativeai
 langchain
+speechrecognition
+pyttsx3
 pandas
-PyPDF2
-gtts
+pydub
+openai-whisper
