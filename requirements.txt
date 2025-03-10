@@ -2,7 +2,7 @@ streamlit
 google-generativeai
 langchain
 speechrecognition
-pyttsx3
 pandas
 pydub
 openai-whisper
+gtts
