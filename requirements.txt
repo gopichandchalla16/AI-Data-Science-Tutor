@@ -4,4 +4,3 @@ langchain
 pandas
 PyPDF2
 gtts
-speechrecognition
