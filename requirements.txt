@@ -1,4 +1,7 @@
 streamlit
 google-generativeai
 langchain
-pydantic
+pandas
+PyPDF2
+gtts
+speechrecognition
