@@ -12,17 +12,18 @@ import io
 # Set Streamlit Page Config
 st.set_page_config(page_title="AI Data Science Buddy", page_icon="📊", layout="wide")
 
-# Custom CSS for Enhanced Styling
+# Custom CSS for Enhanced Styling with Improved Visibility
 st.markdown("""
     <style>
     .main-title { font-size: 3em; color: #2ecc71; text-align: center; font-weight: bold; font-family: 'Arial', sans-serif; margin-bottom: 10px; }
     .subtitle { text-align: center; color: #7f8c8d; font-size: 1.2em; margin-bottom: 20px; }
-    .chat-box { border: 2px solid #3498db; border-radius: 12px; padding: 20px; background: linear-gradient(135deg, #f5f7fa, #c3cfe2); box-shadow: 0 4px 12px rgba(0,0,0,0.1); margin-bottom: 20px; min-height: 300px; overflow-y: auto; }
-    .user-msg { background-color: #ecf0f1; padding: 10px; border-radius: 8px; margin: 5px 0; }
-    .ai-msg { background-color: #2ecc71; color: white; padding: 10px; border-radius: 8px; margin: 5px 0; }
+    .chat-box { border: 2px solid #3498db; border-radius: 12px; padding: 20px; background: linear-gradient(135deg, #f5f7fa, #c3cfe2); box-shadow: 0 4px 12px rgba(0,0,0,0.1); margin-bottom: 20px; min-height: 400px; overflow-y: auto; }
+    .user-msg { background-color: #ecf0f1; padding: 12px; border-radius: 8px; margin: 8px 0; font-size: 1.1em; }
+    .ai-msg { background-color: #27ae60; color: white; padding: 15px; border-radius: 10px; margin: 8px 0; font-size: 1.3em; font-weight: bold; animation: fadeIn 0.5s ease-in; }
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
     .stButton>button { background-color: #e74c3c; color: white; font-size: 16px; padding: 12px 25px; border-radius: 8px; margin: 5px; }
     .stButton>button:hover { background-color: #c0392b; }
-    .stTextInput>div>input { border: 2px solid #3498db; border-radius: 8px; padding: 10px; }
+    .stTextInput>div>input { border: 2px solid #3498db; border-radius: 8px; padding: 10px; font-size: 1.1em; }
     .interactive-btn { background-color: #3498db; }
     .interactive-btn:hover { background-color: #2980b9; }
     </style>
@@ -91,19 +92,16 @@ def generate_response(user_input):
 # Function to Convert Text to Speech and Return Audio Bytes
 def text_to_speech(text):
     try:
-        # Clean text for better speech synthesis
         clean_text = ''.join(c for c in text if c.isalnum() or c.isspace() or c in ".,!?")
         if not clean_text.strip():
             clean_text = "I’ve got nothing to say—let’s try something else!"
-        tts = gTTS(text=clean_text, lang='en', slow=False, tld='com')  # Use 'com' for a clearer voice
+        tts = gTTS(text=clean_text, lang='en', slow=False, tld='com')
         audio_file = "response.mp3"
         tts.save(audio_file)
-        # Play audio based on OS
-        if os.name == 'nt':  # Windows
+        if os.name == 'nt':
             os.system(f"start {audio_file}")
-        elif os.name == 'posix':  # macOS/Linux
+        elif os.name == 'posix':
             os.system(f"afplay {audio_file}" if 'darwin' in os.uname().sysname.lower() else f"mpg123 {audio_file}")
-        # Read audio bytes for Streamlit playback
         with open(audio_file, "rb") as f:
             audio_bytes = f.read()
         return audio_bytes
@@ -139,6 +137,8 @@ def main():
                 chat_html += f'<div class="user-msg"><b>You:</b> {exchange["user"]}</div>'
             if exchange["ai"]:
                 chat_html += f'<div class="ai-msg"><b>AI Buddy:</b> {exchange["ai"]}</div>'
+        # Add JavaScript to auto-scroll to the bottom
+        chat_html += '<script>document.querySelector(".chat-box").scrollTop = document.querySelector(".chat-box").scrollHeight;</script>'
         chat_container.markdown(f'<div class="chat-box">{chat_html}</div>', unsafe_allow_html=True)
 
     # Input Section
@@ -160,6 +160,7 @@ def main():
             st.session_state.conversation_history.append({"user": user_input, "ai": ai_response})
             chat_html += f'<div class="user-msg"><b>You:</b> {user_input}</div>'
             chat_html += f'<div class="ai-msg"><b>AI Buddy:</b> {ai_response}</div>'
+            chat_html += '<script>document.querySelector(".chat-box").scrollTop = document.querySelector(".chat-box").scrollHeight;</script>'
             chat_container.markdown(f'<div class="chat-box">{chat_html}</div>', unsafe_allow_html=True)
             st.session_state.last_audio = text_to_speech(ai_response)
             if st.session_state.last_audio:
@@ -179,6 +180,7 @@ def main():
                 st.session_state.conversation_history.append({"user": "Random tip request", "ai": random_tip})
                 chat_html += f'<div class="user-msg"><b>You:</b> Random tip request</div>'
                 chat_html += f'<div class="ai-msg"><b>AI Buddy:</b> {random_tip}</div>'
+                chat_html += '<script>document.querySelector(".chat-box").scrollTop = document.querySelector(".chat-box").scrollHeight;</script>'
                 chat_container.markdown(f'<div class="chat-box">{chat_html}</div>', unsafe_allow_html=True)
                 st.session_state.last_audio = text_to_speech(random_tip)
                 if st.session_state.last_audio:
