@@ -11,7 +11,7 @@ from datetime import datetime
 import streamlit.components.v1 as components
 
 # Streamlit Page Config
-st.set_page_config(page_title="AI Data Science Guru", page_icon="🧠", layout="wide")
+st.set_page_config(page_title="AI Data Science Robot", page_icon="🤖", layout="wide")
 
 # Add CSS Instructions Here (Updated with Robot Styling)
 st.markdown("""
@@ -273,9 +273,8 @@ def render_robot():
 
 # Main App
 def main():
-    st.markdown('<div class="main-title">AI Data Science Guru</div>', unsafe_allow_html=True)
+    st.markdown('<div class="main-title">AI Data Science Robot</div>', unsafe_allow_html=True)
     st.markdown('<div class="subtitle">🧠 Your Virtual AI Mentor – Explore, Learn & Grow!</div>', unsafe_allow_html=True)
-
 
     # Main Card Layout
     st.markdown('<div class="card">', unsafe_allow_html=True)
@@ -366,7 +365,7 @@ def main():
 
     st.markdown("""
         <div class="footer">
-            Built with ❤️ by Gopichand |  Your AI-Powered Data Science Mentor
+            Built with ❤️ by Gopichand | Your AI-Powered Data Science Mentor
         </div>
     """, unsafe_allow_html=True)
 
