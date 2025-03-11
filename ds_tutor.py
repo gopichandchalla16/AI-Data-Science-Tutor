@@ -13,7 +13,7 @@ import streamlit.components.v1 as components
 # Streamlit Page Config
 st.set_page_config(page_title="AI Data Science Robot", page_icon="🤖", layout="wide")
 
-# Add CSS Instructions Here (Updated with Futuristic Robot Styling)
+# Add CSS Instructions Here (Updated with Robot Styling)
 st.markdown("""
     <style>
     .main-title { 
@@ -86,90 +86,41 @@ st.markdown("""
         box-shadow: 0 4px 8px rgba(0,0,0,0.4); 
         animation: fadeIn 0.5s ease-in, glow 2s infinite; 
     }
-    /* Futuristic Data Scientist Robot Styling */
+    /* Robot Styling */
     .robot-container {
         position: relative;
-        width: 120px;
-        height: 150px;
+        width: 100px;
+        height: 100px;
         margin: 20px auto;
     }
     .robot {
-        width: 100px;
-        height: 100px;
-        background: linear-gradient(135deg, #00e4ff, #1a73e8);
-        border-radius: 20px 20px 50% 50%;
+        width: 80px;
+        height: 80px;
+        background: linear-gradient(135deg, #00d4ff, #007acc);
+        border-radius: 50%;
         position: relative;
-        box-shadow: 0 0 15px rgba(0, 228, 255, 0.8), inset 0 0 10px rgba(255, 255, 255, 0.3);
-        animation: hover 2s infinite ease-in-out;
-        overflow: hidden;
-    }
-    .robot::before {
-        content: '';
-        position: absolute;
-        top: -20px;
-        left: 0;
-        width: 100%;
-        height: 40px;
-        background: radial-gradient(circle, rgba(255, 255, 255, 0.5), transparent);
-        animation: scan 3s infinite linear;
-    }
-    .robot-head {
-        width: 60px;
-        height: 40px;
-        background: #e0e0e0;
-        border-radius: 50% 50% 20px 20px;
-        position: absolute;
-        top: -20px;
-        left: 20px;
-        box-shadow: inset 0 0 5px rgba(0, 228, 255, 0.5);
+        animation: bounce 1s infinite;
     }
     .robot-eye {
-        width: 12px;
-        height: 12px;
-        background: #ff4081;
+        width: 20px;
+        height: 20px;
+        background: #fff;
         border-radius: 50%;
         position: absolute;
-        top: 10px;
+        top: 20px;
         left: 20px;
-        box-shadow: 0 0 8px #ff4081;
-        animation: glow-eye 1.5s infinite;
+        animation: blink 2s infinite;
     }
     .robot-eye.right {
         left: 40px;
     }
-    .data-stream {
-        position: absolute;
-        bottom: 10px;
-        left: 10px;
-        width: 80px;
-        height: 20px;
-        background: rgba(0, 228, 255, 0.2);
-        border-radius: 10px;
-        overflow: hidden;
-    }
-    .data-stream::after {
-        content: '';
-        position: absolute;
-        width: 100%;
-        height: 100%;
-        background: linear-gradient(90deg, transparent, #00e4ff, transparent);
-        animation: data-flow 2s infinite linear;
-    }
-    @keyframes hover {
+    @keyframes bounce {
         0%, 100% { transform: translateY(0); }
         50% { transform: translateY(-10px); }
     }
-    @keyframes scan {
-        0% { transform: translateY(0); }
-        100% { transform: translateY(120px); }
-    }
-    @keyframes glow-eye {
-        0%, 100% { box-shadow: 0 0 8px #ff4081; }
-        50% { box-shadow: 0 0 15px #ff4081; }
-    }
-    @keyframes data-flow {
-        0% { transform: translateX(-100%); }
-        100% { transform: translateX(100%); }
+    @keyframes blink {
+        0%, 100% { height: 20px; }
+        10% { height: 5px; }
     }
     @keyframes fadeIn { 
         from { opacity: 0; transform: translateZ(-10px); } 
@@ -254,13 +205,13 @@ llm = GeminiLLM()
 prompt_template = PromptTemplate(
     input_variables=["history", "input"],
     template="""
-    You are a futuristic AI Data Science Robot Tutor from 2050! Engage users with enthusiasm, provide clear, concise data science answers, and add a robotic flair (e.g., "Beep boop! Analyzing..."). Use examples and stay on topic!
+    You are a futuristic AI Data Science Robot Tutor! Engage users with enthusiasm, provide clear, concise data science answers, and add a robotic flair (e.g., "Beep boop! Analyzing..."). Use examples and stay on topic!
 
     History:
     {history}
 
     User: {input}
-    AI Robot: Beep boop! Processing your query from 2050’s data core... Here’s your advanced intel:
+    AI Robot: Beep boop! Processing your query... Here’s your data science intel:
     """
 )
 memory = ConversationBufferMemory()
@@ -281,7 +232,7 @@ def text_to_speech(text):
         st.warning(f"Voice module error: {str(e)}")
         return None
 
-# Embed the 3D Spline Scene
+# Embed the 3D Spline Scene (Updated Approach)
 def render_spline_scene():
     components.html(
         """
@@ -299,34 +250,31 @@ def render_spline_scene():
         height=500,
     )
 
-# Interactive Futuristic Robot with Voiceover
+# Interactive Robot with Voiceover
 def render_robot():
     components.html(
         """
         <div class="robot-container">
             <div class="robot">
-                <div class="robot-head">
-                    <div class="robot-eye"></div>
-                    <div class="robot-eye right"></div>
-                </div>
-                <div class="data-stream"></div>
+                <div class="robot-eye"></div>
+                <div class="robot-eye right"></div>
             </div>
         </div>
         <script>
             const robot = document.querySelector('.robot');
             robot.addEventListener('click', () => {
-                robot.style.animation = 'hover 0.5s 2';
-                setTimeout(() => { robot.style.animation = 'hover 2s infinite ease-in-out'; }, 1000);
+                robot.style.animation = 'bounce 0.5s 2';
+                setTimeout(() => { robot.style.animation = 'bounce 1s infinite'; }, 1000);
             });
         </script>
         """,
-        height=160
+        height=120
     )
 
 # Main App
 def main():
     st.markdown('<div class="main-title">AI Data Science Robot</div>', unsafe_allow_html=True)
-    st.markdown(f'<div class="subtitle">Your 2050 Cyber-Tutor | {datetime.now().strftime("%B %d, %Y")}</div>', unsafe_allow_html=True)
+    st.markdown(f'<div class="subtitle">Your 3D Cyber-Tutor | {datetime.now().strftime("%B %d, %Y")}</div>', unsafe_allow_html=True)
 
     # Main Card Layout
     st.markdown('<div class="card">', unsafe_allow_html=True)
@@ -342,13 +290,13 @@ def main():
                     Data Science Core
                 </h1>
                 <p style="color: #b0bec5; max-width: 400px; margin-top: 16px; font-family: 'Roboto Mono', monospace;">
-                    Beep boop! I’m your 2050 robotic tutor—ask me about stats, coding, or models, and I’ll compute the answers with futuristic flair!
+                    Beep boop! I’m your robotic tutor—ask me about stats, coding, or models, and I’ll compute the answers!
                 </p>
             </div>
         """, unsafe_allow_html=True)
 
-        # Add Futuristic Robot
-        st.markdown("### Your 2050 Cyber Assistant")
+        # Add Interactive Robot
+        st.markdown("### Your Cyber Assistant")
         render_robot()
 
         st.markdown("### Chat Interface")
@@ -356,7 +304,7 @@ def main():
             chat_container = st.empty()
             chat_html = ""
             if "history" not in st.session_state:
-                st.session_state.history = [{"user": "", "ai": "Beep boop! Greetings from 2050, human! I’m your Data Science Robot—ready to assist. What’s your query?"}]
+                st.session_state.history = [{"user": "", "ai": "Beep boop! Greetings, human! I’m your Data Science Robot—ready to assist. What’s your query?"}]
                 st.session_state.last_audio = text_to_speech(st.session_state.history[0]["ai"])
             for exchange in st.session_state.history:
                 if exchange["user"]:
@@ -390,7 +338,7 @@ def main():
         col3, col4, col5 = st.columns(3)
         with col3:
             if st.button("Random Data Bit", key="tip_btn"):
-                tip = conversation.run("Transmit a quick data science fact from 2050!")
+                tip = conversation.run("Transmit a quick data science fact!")
                 st.session_state.history.append({"user": "Random data bit", "ai": tip})
                 chat_html += f'<div class="user-msg"><b>Human:</b> Random data bit</div>'
                 chat_html += f'<div class="ai-msg"><b>Robot:</b> {tip}</div>'
@@ -405,9 +353,9 @@ def main():
                     st.success("Beep! Signal replayed!")
         with col5:
             if st.button("Reset Core", key="clear_btn"):
-                st.session_state.history = [{"user": "", "ai": "Beep boop! Core reset—ready for new data from 2050!"}]
-                st.session_state.last_audio = text_to_speech("Beep boop! Core reset—ready for new data from 2050!")
-                chat_container.markdown('<div class="chat-box"><div class="ai-msg"><b>Robot:</b> Beep boop! Core reset—ready for new data from 2050!</div></div>', unsafe_allow_html=True)
+                st.session_state.history = [{"user": "", "ai": "Beep boop! Core reset—ready for new data!"}]
+                st.session_state.last_audio = text_to_speech("Beep boop! Core reset—ready for new data!")
+                chat_container.markdown('<div class="chat-box"><div class="ai-msg"><b>Robot:</b> Beep boop! Core reset—ready for new data!</div></div>', unsafe_allow_html=True)
 
         # Render the 3D Spline Scene
         st.markdown("### Interactive 3D Scene")
