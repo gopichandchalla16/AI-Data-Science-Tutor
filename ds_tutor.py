@@ -13,7 +13,7 @@ import streamlit.components.v1 as components
 # Streamlit Page Config
 st.set_page_config(page_title="AI Data Science Robot", page_icon="🤖", layout="wide")
 
-# Add CSS Instructions Here
+# Add CSS Instructions Here (Updated with Robot Styling)
 st.markdown("""
     <style>
     .main-title { 
@@ -86,22 +86,41 @@ st.markdown("""
         box-shadow: 0 4px 8px rgba(0,0,0,0.4); 
         animation: fadeIn 0.5s ease-in, glow 2s infinite; 
     }
-    .did-you-know { 
-        position: fixed; 
-        right: 20px; 
-        top: 150px; 
-        width: 220px; 
-        background: linear-gradient(145deg, #ff6b6b, #ff8787); 
-        padding: 15px; 
-        border-radius: 10px; 
-        box-shadow: 0 4px 8px rgba(0,0,0,0.3), inset 0 0 5px rgba(255,255,255,0.2); 
-        font-size: 0.9em; 
-        color: #fff; 
-        transform: perspective(500px) rotateY(10deg); 
-        transition: transform 0.3s ease; 
+    /* Robot Styling */
+    .robot-container {
+        position: relative;
+        width: 100px;
+        height: 100px;
+        margin: 20px auto;
     }
-    .did-you-know:hover { 
-        transform: perspective(500px) rotateY(0deg); 
+    .robot {
+        width: 80px;
+        height: 80px;
+        background: linear-gradient(135deg, #00d4ff, #007acc);
+        border-radius: 50%;
+        position: relative;
+        animation: bounce 1s infinite;
+    }
+    .robot-eye {
+        width: 20px;
+        height: 20px;
+        background: #fff;
+        border-radius: 50%;
+        position: absolute;
+        top: 20px;
+        left: 20px;
+        animation: blink 2s infinite;
+    }
+    .robot-eye.right {
+        left: 40px;
+    }
+    @keyframes bounce {
+        0%, 100% { transform: translateY(0); }
+        50% { transform: translateY(-10px); }
+    }
+    @keyframes blink {
+        0%, 100% { height: 20px; }
+        10% { height: 5px; }
     }
     @keyframes fadeIn { 
         from { opacity: 0; transform: translateZ(-10px); } 
@@ -213,21 +232,43 @@ def text_to_speech(text):
         st.warning(f"Voice module error: {str(e)}")
         return None
 
-# Embed the 3D Spline Scene
+# Embed the 3D Spline Scene (Updated Approach)
 def render_spline_scene():
     components.html(
         """
-        <script src="https://unpkg.com/@splinetool/react-spline@latest/dist/react-spline.production.min.js"></script>
-        <div id="spline-scene"></div>
-        <script>
-            const { Spline } = ReactSpline;
-            ReactDOM.render(
-                <Spline scene="https://prod.spline.design/kZDDjO5HuC9GJUM2/scene.splinecode" />,
-                document.getElementById('spline-scene')
-            );
+        <script type="module">
+            import { Application } from 'https://unpkg.com/@splinetool/runtime@latest/build/runtime.js';
+            const canvas = document.createElement('canvas');
+            canvas.style.width = '100%';
+            canvas.style.height = '500px';
+            document.getElementById('spline-scene').appendChild(canvas);
+            const spline = new Application(canvas);
+            spline.load('https://prod.spline.design/kZDDjO5HuC9GJUM2/scene.splinecode');
         </script>
+        <div id="spline-scene"></div>
         """,
         height=500,
+    )
+
+# Interactive Robot with Voiceover
+def render_robot():
+    components.html(
+        """
+        <div class="robot-container">
+            <div class="robot">
+                <div class="robot-eye"></div>
+                <div class="robot-eye right"></div>
+            </div>
+        </div>
+        <script>
+            const robot = document.querySelector('.robot');
+            robot.addEventListener('click', () => {
+                robot.style.animation = 'bounce 0.5s 2';
+                setTimeout(() => { robot.style.animation = 'bounce 1s infinite'; }, 1000);
+            });
+        </script>
+        """,
+        height=120
     )
 
 # Main App
@@ -241,7 +282,7 @@ def main():
 
     col1, col2 = st.columns(2)
     
-    # Left Column: Intro and Chat
+    # Left Column: Intro, Robot, and Chat
     with col1:
         st.markdown("""
             <div style="position: relative; z-index: 10; padding: 20px;">
@@ -253,6 +294,10 @@ def main():
                 </p>
             </div>
         """, unsafe_allow_html=True)
+
+        # Add Interactive Robot
+        st.markdown("### Your Cyber Assistant")
+        render_robot()
 
         st.markdown("### Chat Interface")
         with st.container():
