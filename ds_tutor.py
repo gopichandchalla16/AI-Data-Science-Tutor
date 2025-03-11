@@ -8,6 +8,7 @@ from gtts import gTTS
 import io
 import time
 from datetime import datetime
+import streamlit.components.v1 as components
 
 # Streamlit Page Config
 st.set_page_config(page_title="AI Data Science Robot", page_icon="🤖", layout="wide")
@@ -212,6 +213,23 @@ def text_to_speech(text):
         st.warning(f"Voice module error: {str(e)}")
         return None
 
+# Embed the 3D Spline Scene
+def render_spline_scene():
+    components.html(
+        """
+        <script src="https://unpkg.com/@splinetool/react-spline@latest/dist/react-spline.production.min.js"></script>
+        <div id="spline-scene"></div>
+        <script>
+            const { Spline } = ReactSpline;
+            ReactDOM.render(
+                <Spline scene="https://prod.spline.design/kZDDjO5HuC9GJUM2/scene.splinecode" />,
+                document.getElementById('spline-scene')
+            );
+        </script>
+        """,
+        height=500,
+    )
+
 # Main App
 def main():
     st.markdown('<div class="main-title">AI Data Science Robot</div>', unsafe_allow_html=True)
@@ -294,12 +312,9 @@ def main():
                 st.session_state.last_audio = text_to_speech("Beep boop! Core reset—ready for new data!")
                 chat_container.markdown('<div class="chat-box"><div class="ai-msg"><b>Robot:</b> Beep boop! Core reset—ready for new data!</div></div>', unsafe_allow_html=True)
 
-        st.markdown("""
-            <div class="did-you-know">
-                <b>Cyber Fact:</b><br>
-                Neural networks mimic human brains—first conceptualized in 1943!
-            </div>
-        """, unsafe_allow_html=True)
+        # Render the 3D Spline Scene
+        st.markdown("### Interactive 3D Scene")
+        render_spline_scene()
 
     st.markdown('</div>', unsafe_allow_html=True)  # Close card
 
