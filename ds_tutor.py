@@ -9,14 +9,14 @@ import os
 import time
 
 # Set Streamlit Page Config
-st.set_page_config(page_title="AI Data Science Buddy", page_icon="📊", layout="wide")
+st.set_page_config(page_title="AI Data Science Guru", page_icon="📊", layout="wide")
 
 # Custom CSS for Enhanced Styling
 st.markdown("""
     <style>
     .main-title { font-size: 3em; color: #2ecc71; text-align: center; font-weight: bold; font-family: 'Arial', sans-serif; margin-bottom: 10px; }
     .subtitle { text-align: center; color: #7f8c8d; font-size: 1.2em; margin-bottom: 20px; }
-    .chat-box { border: 2px solid #3498db; border-radius: 12px; padding: 20px; background: linear-gradient(135deg, #f5f7fa, #c3cfe2); box-shadow: 0 4px 12px rgba(0,0,0,0.1); margin-bottom: 20px; }
+    .chat-box { border: 2px solid #3498db; border-radius: 12px; padding: 20px; background: linear-gradient(135deg, #f5f7fa, #c3cfe2); box-shadow: 0 4px 12px rgba(0,0,0,0.1); margin-bottom: 20px; min-height: 300px; overflow-y: auto; }
     .user-msg { background-color: #ecf0f1; padding: 10px; border-radius: 8px; margin: 5px 0; }
     .ai-msg { background-color: #2ecc71; color: white; padding: 10px; border-radius: 8px; margin: 5px 0; }
     .stButton>button { background-color: #e74c3c; color: white; font-size: 16px; padding: 12px 25px; border-radius: 8px; }
@@ -29,7 +29,7 @@ st.markdown("""
 try:
     genai.configure(api_key=st.secrets["GEMINI_API_KEY"])
 except KeyError:
-    st.error("⚠️ Oops! Looks like the GEMINI_API_KEY is missing. Please set it in Streamlit secrets to get started!")
+    st.error("⚠️ Oops! Please set the GEMINI_API_KEY in Streamlit secrets to continue!")
     st.stop()
 
 # Custom LLM Wrapper for Gemini API
@@ -88,15 +88,22 @@ def generate_response(user_input):
 # Function to Convert Text to Speech
 def text_to_speech(text):
     try:
-        tts = gTTS(text=text, lang='en', slow=False)
-        tts.save("response.mp3")
+        # Clean the text to avoid issues with special characters
+        clean_text = ''.join(c for c in text if c.isalnum() or c.isspace() or c in ".,!?")
+        if not clean_text.strip():
+            clean_text = "Sorry, I don’t have much to say here!"
+        tts = gTTS(text=clean_text, lang='en', slow=False)
+        audio_file = "response.mp3"
+        tts.save(audio_file)
         # Cross-platform audio playback
         if os.name == 'nt':  # Windows
-            os.system("start response.mp3")
+            os.system(f"start {audio_file}")
         elif os.name == 'posix':  # macOS/Linux
-            os.system("afplay response.mp3" if 'darwin' in os.uname().sysname.lower() else "mpg123 response.mp3")
-    except Exception:
-        st.warning("Oops! Text-to-speech didn’t work this time—let’s keep it text-only for now!")
+            os.system(f"afplay {audio_file}" if 'darwin' in os.uname().sysname.lower() else f"mpg123 {audio_file}")
+        return True
+    except Exception as e:
+        st.warning(f"Text-to-speech hiccup: {str(e)}—let’s stick to text for now!")
+        return False
 
 # Main Streamlit UI
 def main():
@@ -112,13 +119,15 @@ def main():
 
     # Chat Interface
     st.markdown("### Let’s Chat!")
-    chat_container = st.container()
-    with chat_container:
+    with st.container():
+        chat_container = st.empty()  # Use an empty container to update dynamically
+        chat_html = ""
         for exchange in st.session_state.conversation_history:
             if exchange["user"]:
-                st.markdown(f'<div class="user-msg"><b>You:</b> {exchange["user"]}</div>', unsafe_allow_html=True)
+                chat_html += f'<div class="user-msg"><b>You:</b> {exchange["user"]}</div>'
             if exchange["ai"]:
-                st.markdown(f'<div class="ai-msg"><b>AI Buddy:</b> {exchange["ai"]}</div>', unsafe_allow_html=True)
+                chat_html += f'<div class="ai-msg"><b>AI Buddy:</b> {exchange["ai"]}</div>'
+        chat_container.markdown(f'<div class="chat-box">{chat_html}</div>', unsafe_allow_html=True)
 
     # Input Section
     with st.form(key="input_form", clear_on_submit=True):
@@ -130,22 +139,25 @@ def main():
         with st.spinner("Thinking up something awesome... 🤓"):
             ai_response = generate_response(user_input)
             st.session_state.conversation_history.append({"user": user_input, "ai": ai_response})
-            chat_container.markdown(f'<div class="ai-msg"><b>AI Buddy:</b> {ai_response}</div>', unsafe_allow_html=True)
+            # Update chat display
+            chat_html += f'<div class="user-msg"><b>You:</b> {user_input}</div>'
+            chat_html += f'<div class="ai-msg"><b>AI Buddy:</b> {ai_response}</div>'
+            chat_container.markdown(f'<div class="chat-box">{chat_html}</div>', unsafe_allow_html=True)
+            # Speak the response
             text_to_speech(ai_response)
-            time.sleep(0.5)  # Small delay to ensure UI updates smoothly
+            time.sleep(0.5)  # Small delay to ensure audio plays after UI update
     elif submit_button and not user_input.strip():
         st.warning("Hey, don’t leave me hanging! Type something cool to ask!")
 
     # Fun Interactive Feature: Quick Tips Button
     if st.button("Gimme a Random Data Science Tip!"):
-        tips = [
-            "Did you know? Overfitting is like memorizing answers instead of learning the logic—keep your models simple!",
-            "Pro tip: Always split your data into train and test sets—it’s like keeping a secret stash of candy to check later!",
-            "Fun fact: A confusion matrix isn’t confusing once you see it as a scorecard for your model’s predictions!"
-        ]
-        random_tip = generate_response("Give me a quick random data science tip!")
-        st.markdown(f'<div class="ai-msg"><b>AI Buddy:</b> {random_tip}</div>', unsafe_allow_html=True)
-        text_to_speech(random_tip)
+        with st.spinner("Fetching a fun tip..."):
+            random_tip = generate_response("Give me a quick random data science tip!")
+            st.session_state.conversation_history.append({"user": "Random tip request", "ai": random_tip})
+            chat_html += f'<div class="user-msg"><b>You:</b> Random tip request</div>'
+            chat_html += f'<div class="ai-msg"><b>AI Buddy:</b> {random_tip}</div>'
+            chat_container.markdown(f'<div class="chat-box">{chat_html}</div>', unsafe_allow_html=True)
+            text_to_speech(random_tip)
 
 if __name__ == "__main__":
     main()
