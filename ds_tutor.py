@@ -10,159 +10,208 @@ from datetime import datetime
 import streamlit.components.v1 as components
 
 # Streamlit Page Config
-st.set_page_config(page_title="AI Data Science Tutor", page_icon="🤖", layout="wide")
+st.set_page_config(page_title="AI Data Science Nexus", page_icon="🌌", layout="wide")
 
-# Enhanced CSS with Improved Aesthetics
+# Ultra-Creative CSS
 st.markdown("""
     <style>
-    body { background: #0f172a; }
+    body { 
+        background: linear-gradient(135deg, #0d1321, #1a1a2e); 
+        overflow: hidden; 
+    }
+    .cyber-grid { 
+        position: fixed; 
+        top: 0; 
+        left: 0; 
+        width: 100%; 
+        height: 100%; 
+        background: url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cGF0aCBkPSJNMCwwIEgyMDBNMjAwLDAgVjIwME0wLDIwMCBIMjAwTTAyMDAgVjAiIGZpbGw9Im5vbmUiIHN0cm9rZT0icmdiYSgwLDIyOCwyNTUsMC4xKSIgc3Ryb2tlLXdpZHRoPSIxIi8+PC9zdmc+'); 
+        background-size: 50px 50px; 
+        opacity: 0.3; 
+        z-index: -1; 
+        animation: gridPulse 10s infinite; 
+    }
     .main-title { 
-        font-size: 3.5em; 
-        color: #00e4ff; 
+        font-size: 4em; 
+        color: #00f4ff; 
         text-align: center; 
         font-family: 'Orbitron', sans-serif; 
-        text-shadow: 0 0 15px #00e4ff; 
-        margin-top: 10px; 
+        text-shadow: 0 0 20px #00f4ff, 0 0 40px #00f4ff; 
+        animation: neonFlicker 3s infinite; 
+        margin-top: 20px; 
     }
     .subtitle { 
         text-align: center; 
-        color: #b0bec5; 
-        font-size: 1.2em; 
+        color: #80e8ff; 
+        font-size: 1.5em; 
         font-family: 'Roboto Mono', monospace; 
-        text-shadow: 0 0 5px #b0bec5; 
-        margin-bottom: 20px; 
+        text-shadow: 0 0 10px #80e8ff; 
+        margin-bottom: 30px; 
     }
     .card { 
-        border-radius: 20px; 
-        background: linear-gradient(145deg, #1e293b, #16213e); 
-        padding: 20px; 
-        box-shadow: 0 10px 20px rgba(0,0,0,0.6), inset 0 0 15px rgba(0,228,255,0.2); 
-        transition: transform 0.3s ease, box-shadow 0.3s ease; 
+        border-radius: 25px; 
+        background: rgba(26, 42, 62, 0.9); 
+        padding: 25px; 
+        box-shadow: 0 15px 40px rgba(0,0,0,0.7), inset 0 0 20px rgba(0,244,255,0.3); 
+        backdrop-filter: blur(5px); 
+        transition: transform 0.4s ease, box-shadow 0.4s ease; 
     }
     .card:hover { 
-        transform: scale(1.02); 
-        box-shadow: 0 15px 30px rgba(0,0,0,0.8); 
+        transform: translateY(-10px); 
+        box-shadow: 0 20px 50px rgba(0,0,0,0.9); 
     }
     .chat-box { 
-        border: 2px solid #00e4ff; 
-        border-radius: 10px; 
-        padding: 15px; 
-        background: #0f172a; 
-        box-shadow: inset 0 0 10px rgba(0,228,255,0.1); 
-        min-height: 450px; 
-        max-height: 450px; 
+        border: 2px dashed #00f4ff; 
+        border-radius: 15px; 
+        padding: 20px; 
+        background: rgba(15, 23, 42, 0.8); 
+        min-height: 500px; 
+        max-height: 500px; 
         overflow-y: auto; 
         font-family: 'Roboto Mono', monospace; 
+        box-shadow: inset 0 0 15px rgba(0,244,255,0.2); 
+        animation: borderGlow 2s infinite; 
     }
     .user-msg { 
-        background: #334155; 
-        padding: 10px 15px; 
-        border-radius: 8px; 
-        margin: 10px 0; 
-        color: #e2e8f0; 
-        box-shadow: 0 2px 5px rgba(0,0,0,0.3); 
-    }
-    .ai-msg { 
-        background: linear-gradient(90deg, #00e4ff, #1a73e8); 
-        color: #fff; 
+        background: linear-gradient(135deg, #2d4266, #1e2a3d); 
         padding: 12px 18px; 
-        border-radius: 8px; 
-        margin: 10px 0; 
-        font-weight: bold; 
+        border-radius: 10px; 
+        margin: 12px 0; 
+        color: #d1e8ff; 
         box-shadow: 0 3px 8px rgba(0,0,0,0.4); 
-        animation: fadeIn 0.5s ease-in; 
+        transition: transform 0.2s ease; 
     }
-    /* Enhanced Robot Styling */
+    .user-msg:hover { transform: scale(1.02); }
+    .ai-msg { 
+        background: linear-gradient(90deg, #00f4ff, #1a73e8); 
+        color: #fff; 
+        padding: 15px 20px; 
+        border-radius: 10px; 
+        margin: 12px 0; 
+        font-weight: bold; 
+        box-shadow: 0 5px 15px rgba(0,244,255,0.5); 
+        animation: fadeIn 0.6s ease-in; 
+    }
+    /* Hyper-Creative Robot */
     .robot-container { 
-        width: 120px; 
-        height: 120px; 
+        width: 150px; 
+        height: 180px; 
         margin: 20px auto; 
         position: relative; 
     }
     .robot { 
-        width: 100px; 
-        height: 100px; 
-        background: linear-gradient(135deg, #00e4ff, #1a73e8); 
-        border-radius: 20px 20px 50% 50%; 
+        width: 120px; 
+        height: 120px; 
+        background: linear-gradient(135deg, #00f4ff, #1a73e8); 
+        border-radius: 30px 30px 60% 60%; 
         position: absolute; 
-        top: 10px; 
-        left: 10px; 
-        box-shadow: 0 0 20px rgba(0,228,255,0.8); 
-        animation: hover 2s infinite ease-in-out; 
-        transition: transform 0.2s ease; 
+        top: 20px; 
+        left: 15px; 
+        box-shadow: 0 0 30px rgba(0,244,255,0.9), inset 0 0 15px rgba(255,255,255,0.3); 
+        animation: hoverGlow 2s infinite ease-in-out; 
+        transition: transform 0.3s ease; 
     }
-    .robot:hover { transform: scale(1.1); }
+    .robot:hover { transform: scale(1.15) rotate(5deg); }
+    .robot-core { 
+        width: 40px; 
+        height: 40px; 
+        background: radial-gradient(circle, #ff4081, transparent); 
+        border-radius: 50%; 
+        position: absolute; 
+        top: 50%; 
+        left: 50%; 
+        transform: translate(-50%, -50%); 
+        animation: corePulse 1.5s infinite; 
+    }
     .robot-eye { 
-        width: 15px; 
-        height: 15px; 
-        background: #ff4081; 
+        width: 20px; 
+        height: 20px; 
+        background: #ffdd00; 
         border-radius: 50%; 
         position: absolute; 
         top: 30px; 
-        left: 30px; 
-        box-shadow: 0 0 10px #ff4081; 
-        animation: glow-eye 1.5s infinite; 
+        left: 35px; 
+        box-shadow: 0 0 15px #ffdd00; 
+        animation: eyeGlow 2s infinite; 
     }
-    .robot-eye.right { left: 55px; }
-    .data-stream { 
+    .robot-eye.right { left: 65px; }
+    .data-orbits { 
         position: absolute; 
-        bottom: 10px; 
-        left: 10px; 
-        width: 80px; 
-        height: 10px; 
-        background: rgba(0,228,255,0.2); 
-        border-radius: 5px; 
-        animation: data-flow 2s infinite linear; 
+        width: 140px; 
+        height: 140px; 
+        top: 10px; 
+        left: 5px; 
+        border: 2px dotted rgba(0,244,255,0.5); 
+        border-radius: 50%; 
+        animation: orbitSpin 6s infinite linear; 
     }
-    @keyframes hover { 
-        0%, 100% { transform: translateY(0); } 
-        50% { transform: translateY(-10px); } 
+    @keyframes hoverGlow { 
+        0%, 100% { transform: translateY(0); box-shadow: 0 0 30px rgba(0,244,255,0.9); } 
+        50% { transform: translateY(-15px); box-shadow: 0 0 50px rgba(0,244,255,1); } 
     }
-    @keyframes glow-eye { 
-        0%, 100% { box-shadow: 0 0 10px #ff4081; } 
-        50% { box-shadow: 0 0 15px #ff4081; } 
+    @keyframes corePulse { 
+        0%, 100% { transform: translate(-50%, -50%) scale(1); opacity: 0.8; } 
+        50% { transform: translate(-50%, -50%) scale(1.2); opacity: 1; } 
     }
-    @keyframes data-flow { 
-        0% { background-position: 0%; } 
-        100% { background-position: 200%; } 
+    @keyframes eyeGlow { 
+        0%, 100% { box-shadow: 0 0 15px #ffdd00; } 
+        50% { box-shadow: 0 0 25px #ffdd00; } 
+    }
+    @keyframes orbitSpin { 
+        0% { transform: rotate(0deg); } 
+        100% { transform: rotate(360deg); } 
     }
     @keyframes fadeIn { 
-        from { opacity: 0; transform: translateY(10px); } 
+        from { opacity: 0; transform: translateY(15px); } 
         to { opacity: 1; transform: translateY(0); } 
     }
+    @keyframes neonFlicker { 
+        0%, 100% { opacity: 1; } 
+        50% { opacity: 0.95; } 
+    }
+    @keyframes gridPulse { 
+        0%, 100% { opacity: 0.3; } 
+        50% { opacity: 0.5; } 
+    }
+    @keyframes borderGlow { 
+        0%, 100% { border-color: #00f4ff; } 
+        50% { border-color: #1a73e8; } 
+    }
     .stButton>button { 
-        background: linear-gradient(90deg, #ff6b6b, #ff8787); 
-        color: white; 
-        padding: 10px 20px; 
-        border-radius: 8px; 
-        font-family: 'Roboto Mono', monospace; 
-        box-shadow: 0 3px 6px rgba(0,0,0,0.3); 
+        background: linear-gradient(90deg, #ff4081, #ff6b6b); 
+        color: #fff; 
+        padding: 12px 25px; 
+        border-radius: 10px; 
+        font-family: 'Orbitron', sans-serif; 
+        box-shadow: 0 5px 15px rgba(255,64,129,0.5); 
         transition: all 0.3s ease; 
     }
     .stButton>button:hover { 
-        background: linear-gradient(90deg, #ff8787, #ff6b6b); 
-        transform: translateY(-2px); 
-        box-shadow: 0 5px 10px rgba(0,0,0,0.4); 
+        background: linear-gradient(90deg, #ff6b6b, #ff4081); 
+        transform: scale(1.05); 
+        box-shadow: 0 8px 20px rgba(255,64,129,0.7); 
     }
     .stTextInput>div>input { 
-        border: 2px solid #00e4ff; 
-        border-radius: 8px; 
-        padding: 12px; 
-        background: #1e293b; 
-        color: #e2e8f0; 
+        border: 2px solid #00f4ff; 
+        border-radius: 10px; 
+        padding: 15px; 
+        background: rgba(26,42,62,0.8); 
+        color: #d1e8ff; 
         font-family: 'Roboto Mono', monospace; 
-        box-shadow: inset 0 0 5px rgba(0,228,255,0.2); 
+        box-shadow: inset 0 0 10px rgba(0,244,255,0.3); 
+        transition: border-color 0.3s ease; 
     }
+    .stTextInput>div>input:focus { border-color: #ff4081; }
     .footer { 
         text-align: center; 
-        padding: 15px; 
-        background: #16213e; 
-        border-top: 1px solid #00e4ff; 
-        color: #b0bec5; 
+        padding: 20px; 
+        background: rgba(22,33,62,0.9); 
+        color: #80e8ff; 
         font-family: 'Roboto Mono', monospace; 
         position: fixed; 
         bottom: 0; 
         width: 100%; 
+        text-shadow: 0 0 5px #80e8ff; 
     }
     </style>
     <link href="https://fonts.googleapis.com/css2?family=Orbitron&family=Roboto+Mono&display=swap" rel="stylesheet">
@@ -195,13 +244,13 @@ llm = GeminiLLM()
 prompt_template = PromptTemplate(
     input_variables=["history", "input"],
     template="""
-    You are a futuristic AI Data Science Tutor! Provide clear, concise answers with enthusiasm and a robotic flair (e.g., "Beep boop! Computing..."). Use examples where helpful and stay on topic!
+    You are a cosmic AI Data Science Nexus! Deliver concise, insightful answers with a futuristic flair (e.g., "Beep zap! Processing..."). Inspire users with examples and stay on topic!
 
     History:
     {history}
 
     User: {input}
-    AI Tutor: Beep boop! Computing your query... Here’s your data science insight:
+    AI Nexus: Beep zap! Processing your query... Here’s your cosmic data insight:
     """
 )
 memory = ConversationBufferMemory()
@@ -212,118 +261,115 @@ def text_to_speech(text):
     try:
         clean_text = ''.join(c for c in text if c.isalnum() or c.isspace() or c in ".,!?")
         if not clean_text.strip():
-            clean_text = "Beep boop! No input detected—query me!"
+            clean_text = "Beep zap! Query required—engage me!"
         tts = gTTS(text=clean_text, lang='en', slow=False, tld='co.uk')
         audio_bytes = io.BytesIO()
         tts.write_to_fp(audio_bytes)
         audio_bytes.seek(0)
         return audio_bytes.read()
     except Exception as e:
-        st.warning(f"Voice error: {str(e)}")
+        st.warning(f"Nexus voice error: {str(e)}")
         return None
 
-# Enhanced Robot with Data Stream
+# Cosmic Robot with Orbits
 def render_robot():
     components.html(
         """
         <div class="robot-container">
-            <div class="robot" title="Click me!">
+            <div class="data-orbits"></div>
+            <div class="robot" title="Interact with me!">
+                <div class="robot-core"></div>
                 <div class="robot-eye"></div>
                 <div class="robot-eye right"></div>
-                <div class="data-stream" style="background: linear-gradient(90deg, transparent, #00e4ff, transparent);"></div>
             </div>
         </div>
         <script>
             const robot = document.querySelector('.robot');
             robot.addEventListener('click', () => {
-                robot.style.animation = 'hover 0.5s 2';
-                setTimeout(() => { robot.style.animation = 'hover 2s infinite ease-in-out'; }, 1000);
+                robot.style.animation = 'hoverGlow 0.5s 2';
+                setTimeout(() => { robot.style.animation = 'hoverGlow 2s infinite ease-in-out'; }, 1000);
             });
         </script>
         """,
-        height=140
+        height=200
     )
 
 # Main App
 def main():
-    st.markdown('<div class="main-title">AI Data Science Tutor</div>', unsafe_allow_html=True)
-    st.markdown('<div class="subtitle">🧠 Your Cybernetic Learning Companion</div>', unsafe_allow_html=True)
+    st.markdown('<div class="cyber-grid"></div>', unsafe_allow_html=True)
+    st.markdown('<div class="main-title">Data Science Nexus</div>', unsafe_allow_html=True)
+    st.markdown('<div class="subtitle">🌌 Your Cosmic AI Guide to Infinite Knowledge</div>', unsafe_allow_html=True)
 
-    # Main Card Layout
     with st.container():
         st.markdown('<div class="card">', unsafe_allow_html=True)
-        col1, col2 = st.columns([1, 1.2])
+        col1, col2 = st.columns([1, 1.3])
 
-        # Left Column: Robot and Chat
+        # Left: Robot and Chat
         with col1:
-            st.markdown("### 🤖 Cyber Tutor", help="Your interactive AI assistant!")
+            st.markdown("### 🌠 Nexus Core", help="Your cosmic companion awaits!")
             render_robot()
 
-            st.markdown("#### Chat")
+            st.markdown("#### Transmission Log")
             chat_container = st.empty()
             chat_html = ""
             if "history" not in st.session_state:
-                st.session_state.history = [{"user": "", "ai": "Beep boop! Hello! I’m your AI Data Science Tutor. Ask me anything!"}]
+                st.session_state.history = [{"user": "", "ai": "Beep zap! Greetings, explorer! I’m your Data Science Nexus. What knowledge do you seek?"}]
                 st.session_state.last_audio = text_to_speech(st.session_state.history[0]["ai"])
             for exchange in st.session_state.history:
                 if exchange["user"]:
-                    chat_html += f'<div class="user-msg"><b>You:</b> {exchange["user"]}</div>'
+                    chat_html += f'<div class="user-msg"><b>Explorer:</b> {exchange["user"]}</div>'
                 if exchange["ai"]:
-                    chat_html += f'<div class="ai-msg"><b>Tutor:</b> {exchange["ai"]}</div>'
+                    chat_html += f'<div class="ai-msg"><b>Nexus:</b> {exchange["ai"]}</div>'
             chat_html += '<script>document.querySelector(".chat-box").scrollTop = document.querySelector(".chat-box").scrollHeight;</script>'
             chat_container.markdown(f'<div class="chat-box">{chat_html}</div>', unsafe_allow_html=True)
 
-        # Right Column: Input and Tools
+        # Right: Input and Controls
         with col2:
-            st.markdown("### Ask Away!")
+            st.markdown("### Query the Cosmos")
             with st.form(key="input_form", clear_on_submit=True):
-                user_input = st.text_input("", placeholder="E.g., What’s a neural network?", label_visibility="collapsed")
-                submit_button = st.form_submit_button(label="🚀 Send")
+                user_input = st.text_input("", placeholder="Ask me anything—e.g., What’s a neural net?", label_visibility="collapsed")
+                submit_button = st.form_submit_button(label="🌠 Transmit")
 
             if submit_button and user_input.strip():
-                with st.spinner("Beep boop! Processing..."):
+                with st.spinner("Beep zap! Decoding..."):
                     response = conversation.run(input=user_input)
                     st.session_state.history.append({"user": user_input, "ai": response})
-                    chat_html += f'<div class="user-msg"><b>You:</b> {user_input}</div>'
-                    chat_html += f'<div class="ai-msg"><b>Tutor:</b> {response}</div>'
+                    chat_html += f'<div class="user-msg"><b>Explorer:</b> {exchange["user"]}</div>'
+                    chat_html += f'<div class="ai-msg"><b>Nexus:</b> {response}</div>'
                     chat_html += '<script>document.querySelector(".chat-box").scrollTop = document.querySelector(".chat-box").scrollHeight;</script>'
                     chat_container.markdown(f'<div class="chat-box">{chat_html}</div>', unsafe_allow_html=True)
                     st.session_state.last_audio = text_to_speech(response)
                     if st.session_state.last_audio:
                         st.audio(st.session_state.last_audio, format="audio/mp3")
             elif submit_button:
-                st.warning("Beep! Please enter a query.")
+                st.warning("Beep! Input required to engage the Nexus.")
 
-            st.markdown("### Tools")
+            st.markdown("### Cosmic Tools")
             col3, col4, col5 = st.columns(3)
             with col3:
-                if st.button("🎲 Random Fact", help="Get a quick data science tidbit"):
-                    tip = conversation.run("Share a quick data science fact!")
-                    st.session_state.history.append({"user": "Random fact", "ai": tip})
-                    chat_html += f'<div class="user-msg"><b>You:</b> Random fact</div>'
-                    chat_html += f'<div class="ai-msg"><b>Tutor:</b> {tip}</div>'
+                if st.button("✨ Data Spark", help="Ignite a random insight"):
+                    tip = conversation.run("Share a cosmic data science fact!")
+                    st.session_state.history.append({"user": "Data spark", "ai": tip})
+                    chat_html += f'<div class="user-msg"><b>Explorer:</b> Data spark</div>'
+                    chat_html += f'<div class="ai-msg"><b>Nexus:</b> {tip}</div>'
                     chat_container.markdown(f'<div class="chat-box">{chat_html}</div>', unsafe_allow_html=True)
                     st.session_state.last_audio = text_to_speech(tip)
                     if st.session_state.last_audio:
                         st.audio(st.session_state.last_audio, format="audio/mp3")
             with col4:
-                if st.button("🔊 Replay", help="Hear the last response again"):
+                if st.button("🔊 Echo", help="Replay the last transmission"):
                     if st.session_state.get("last_audio"):
                         st.audio(st.session_state.last_audio, format="audio/mp3")
-                        st.success("Beep! Replayed!")
+                        st.success("Beep zap! Echoed!")
             with col5:
-                if st.button("🔄 Reset", help="Start a fresh session"):
-                    st.session_state.history = [{"user": "", "ai": "Beep boop! Session reset—ready to learn!"}]
-                    st.session_state.last_audio = text_to_speech("Beep boop! Session reset—ready to learn!")
-                    chat_container.markdown('<div class="chat-box"><div class="ai-msg"><b>Tutor:</b> Beep boop! Session reset—ready to learn!</div></div>', unsafe_allow_html=True)
+                if st.button("🌌 Reboot", help="Reset the Nexus core"):
+                    st.session_state.history = [{"user": "", "ai": "Beep zap! Core rebooted—ready for exploration!"}]
+                    st.session_state.last_audio = text_to_speech("Beep zap! Core rebooted—ready for exploration!")
+                    chat_container.markdown('<div class="chat-box"><div class="ai-msg"><b>Nexus:</b> Beep zap! Core rebooted—ready for exploration!</div></div>', unsafe_allow_html=True)
 
-        st.markdown('</div>', unsafe_allow_html=True)  # Close card
+        st.markdown('</div>', unsafe_allow_html=True)
 
-    # Spline Scene (Optional - Uncomment if desired)
-    # st.markdown("### 3D Cyber Scene")
-    # components.html(...Spline code here..., height=300)
-
-    st.markdown('<div class="footer">Built with ❤️ by Gopichand | Powered by AI</div>', unsafe_allow_html=True)
+    st.markdown('<div class="footer">Crafted by Gopichand | Powered by Cosmic AI</div>', unsafe_allow_html=True)
 
 if __name__ == "__main__":
     main()
