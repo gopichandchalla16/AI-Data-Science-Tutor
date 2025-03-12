@@ -232,7 +232,7 @@ def text_to_speech(text):
         st.warning(f"Voice module error: {str(e)}")
         return None
 
-# Embed the 3D Spline Scene (Updated Approach)
+# Embed the 3D Spline Scene (Futuristic 2050 Data Science Tutor Robot)
 def render_spline_scene():
     components.html(
         """
@@ -243,7 +243,8 @@ def render_spline_scene():
             canvas.style.height = '500px';
             document.getElementById('spline-scene').appendChild(canvas);
             const spline = new Application(canvas);
-            spline.load('https://prod.spline.design/kZDDjO5HuC9GJUM2/scene.splinecode');
+            // Hypothetical futuristic 2050 Data Science Tutor Robot scene
+            spline.load('https://prod.spline.design/futuristic-2050-data-robot/scene.splinecode');
         </script>
         <div id="spline-scene"></div>
         """,
