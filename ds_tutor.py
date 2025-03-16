@@ -6,14 +6,12 @@ from langchain.memory import ConversationBufferMemory
 from langchain.llms.base import LLM
 from gtts import gTTS
 import io
-import time
-from datetime import datetime
 import streamlit.components.v1 as components
 
 # Streamlit Page Config
 st.set_page_config(page_title="AI Data Science Robot", page_icon="🤖", layout="wide")
 
-# Add CSS Instructions
+# Add CSS Instructions (Updated with Login Card Styling)
 st.markdown("""
     <style>
     .main-title { 
@@ -86,7 +84,22 @@ st.markdown("""
         box-shadow: 0 4px 8px rgba(0,0,0,0.4); 
         animation: fadeIn 0.5s ease-in, glow 2s infinite; 
     }
-    /* Robot Styling */
+    .login-card {
+        border-radius: 15px;
+        background: linear-gradient(145deg, #1e293b, #0f172a);
+        padding: 30px;
+        box-shadow: 0 8px 16px rgba(0,0,0,0.5), inset 0 0 10px rgba(0,212,255,0.2);
+        max-width: 400px;
+        margin: 50px auto;
+        text-align: center;
+    }
+    .login-title {
+        font-family: 'Orbitron', sans-serif;
+        color: #00d4ff;
+        font-size: 2em;
+        text-shadow: 0 0 5px #00d4ff;
+        margin-bottom: 20px;
+    }
     .robot-container {
         position: relative;
         width: 100px;
@@ -162,7 +175,7 @@ st.markdown("""
     }
     .footer { 
         text-align: center; 
-        padding: 20px; 
+        padding: 15px; 
         background: linear-gradient(145deg, #1a1a2e, #16213e); 
         border-top: 2px solid #00d4ff; 
         font-size: 1em; 
@@ -175,6 +188,13 @@ st.markdown("""
     </style>
     <link href="https://fonts.googleapis.com/css2?family=Orbitron&family=Roboto+Mono&display=swap" rel="stylesheet">
 """, unsafe_allow_html=True)
+
+# Custom Login Details (Hardcoded for Simplicity)
+VALID_CREDENTIALS = {
+    "gopi": "gopi123",
+    "admin": "admin2025",
+    "user": "databot"
+}
 
 # Load Gemini API Key
 try:
@@ -271,8 +291,38 @@ def render_robot():
         height=120
     )
 
+# Login Function
+def login():
+    if "logged_in" not in st.session_state:
+        st.session_state.logged_in = False
+
+    if not st.session_state.logged_in:
+        st.markdown('<div class="login-card">', unsafe_allow_html=True)
+        st.markdown('<div class="login-title">Cyber Access Portal</div>', unsafe_allow_html=True)
+        
+        with st.form(key="login_form"):
+            username = st.text_input("Username", placeholder="e.g., gopi")
+            password = st.text_input("Password", type="password", placeholder="e.g., gopi123")
+            submit = st.form_submit_button("Access System")
+
+            if submit:
+                if username in VALID_CREDENTIALS and VALID_CREDENTIALS[username] == password:
+                    st.session_state.logged_in = True
+                    st.success("Beep boop! Access granted! Welcome to the Data Science Core.")
+                    st.rerun()  # Refresh the app to show main content
+                else:
+                    st.error("Invalid credentials! Try again, human.")
+
+        st.markdown('<p style="color: #b0bec5; font-family: \'Roboto Mono\', monospace;">Hint: Try "gopi" / "gopi123" or "admin" / "admin2025"</p>', unsafe_allow_html=True)
+        st.markdown('</div>', unsafe_allow_html=True)
+        return False
+    return True
+
 # Main App
 def main():
+    if not login():
+        return  # Stop execution if not logged in
+
     st.markdown('<div class="main-title">AI Data Science Robot</div>', unsafe_allow_html=True)
     st.markdown('<div class="subtitle">🧠 Your Virtual AI Mentor – Explore, Learn & Grow!</div>', unsafe_allow_html=True)
 
@@ -363,25 +413,12 @@ def main():
 
     st.markdown('</div>', unsafe_allow_html=True)  # Close card
 
-    # Quantum Core Footer
+    # Simple Footer with Gopi Chand's Name
     st.markdown("""
         <div class="footer">
-            <div style="display: flex; justify-content: center; align-items: center; gap: 10px;">
-                <div style="width: 12px; height: 12px; background: #00d4ff; border-radius: 50%; box-shadow: 0 0 10px #00d4ff; animation: pulseCore 1.5s infinite;"></div>
-                <p style="margin: 0; font-family: 'Orbitron', sans-serif; color: #00d4ff; font-size: 1.2em; text-shadow: 0 0 5px #00d4ff;">
-                    <b>Quantum AI Core</b> | Powered by Grok 3
-                </p>
-            </div>
-            <p style="margin: 5px 0 0; font-family: 'Roboto Mono', monospace; color: #b0bec5; font-size: 0.85em;">
-                Processing at 10⁹ teraflops/sec ⚙️
+            <p style="margin: 0; font-family: 'Roboto Mono', monospace; color: #b0bec5; font-size: 0.9em;">
+                Created by <b>Gopi Chand</b> | AI Data Science Robot © 2025
             </p>
-            <style>
-                @keyframes pulseCore {
-                    0% { transform: scale(1); box-shadow: 0 0 10px #00d4ff; }
-                    50% { transform: scale(1.2); box-shadow: 0 0 20px #00d4ff; }
-                    100% { transform: scale(1); box-shadow: 0 0 10px #00d4ff; }
-                }
-            </style>
         </div>
     """, unsafe_allow_html=True)
 
