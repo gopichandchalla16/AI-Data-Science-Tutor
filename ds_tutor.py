@@ -238,32 +238,25 @@ def render_spline_scene():
         """
         <div style="position: relative; width: 100%; height: 500px; background: #0f172a; border: 3px solid #00d4ff; border-radius: 15px; box-shadow: 0 0 20px rgba(0,212,255,0.5); overflow: hidden;">
             <div style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: radial-gradient(circle, rgba(0,212,255,0.2), transparent 70%); z-index: 1;"></div>
+            <div id="spline-container" style="width: 100%; height: 100%; position: relative; z-index: 2;"></div>
+            <div id="spline-loading" style="color: #b0bec5; font-family: 'Roboto Mono', monospace; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 3;">Loading Futuristic Robot...</div>
             <script type="module">
                 import { Application } from 'https://unpkg.com/@splinetool/runtime@latest/build/runtime.js';
+                const container = document.getElementById('spline-container');
                 const canvas = document.createElement('canvas');
                 canvas.style.width = '100%';
                 canvas.style.height = '100%';
-                canvas.style.position = 'absolute';
-                canvas.style.top = '0';
-                canvas.style.left = '0';
-                canvas.style.zIndex = '2';
-                canvas.style.animation = 'rotateGlow 10s infinite linear';
-                document.currentScript.previousElementSibling.appendChild(canvas);
+                container.appendChild(canvas);
                 const spline = new Application(canvas);
-                spline.load('https://prod.spline.design/5fPzvNMcvK6pW8gP/scene.splinecode')
+                spline.load('https://prod.spline.design/UW8w1e5oP4lXgZxQ/scene.splinecode')
+                    .then(() => {
+                        document.getElementById('spline-loading').style.display = 'none';
+                    })
                     .catch(err => {
-                        document.getElementById('spline-fallback').innerText = 'Error loading futuristic robot scene: ' + err.message;
+                        document.getElementById('spline-loading').innerText = 'Error: ' + err.message;
                     });
             </script>
-            <div id="spline-fallback" style="color: #b0bec5; font-family: 'Roboto Mono', monospace; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 3;"></div>
         </div>
-        <style>
-            @keyframes rotateGlow {
-                0% { transform: rotate(0deg) scale(1); box-shadow: 0 0 10px rgba(0,212,255,0.5); }
-                50% { transform: rotate(180deg) scale(1.02); box-shadow: 0 0 20px rgba(0,212,255,0.8); }
-                100% { transform: rotate(360deg) scale(1); box-shadow: 0 0 10px rgba(0,212,255,0.5); }
-            }
-        </style>
         """,
         height=510
     )
@@ -385,7 +378,7 @@ def main():
     st.markdown("""
         <div class="footer">
             <p style="margin: 0; font-family: 'Roboto Mono', monospace; color: #b0bec5; font-size: 0.9em;">
-                Created by <b>Gopi Chand</b> | AI Data Science Tutor © 2025
+                Created by <b>GopiChand</b> | AI Data Science Tutor © 2025
             </p>
         </div>
     """, unsafe_allow_html=True)
