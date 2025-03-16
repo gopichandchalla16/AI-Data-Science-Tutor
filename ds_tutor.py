@@ -232,33 +232,22 @@ def text_to_speech(text):
         st.warning(f"Voice module error: {str(e)}")
         return None
 
-# Embed the 3D Spline Scene (Updated for Visibility and Futuristic Robot Theme)
+# Embed the 3D Spline Scene (Updated Approach)
 def render_spline_scene():
     components.html(
         """
-        <div style="position: relative; width: 100%; height: 500px; background: #0f172a; border: 3px solid #00d4ff; border-radius: 15px; box-shadow: 0 0 20px rgba(0,212,255,0.5); overflow: hidden;">
-            <div style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: radial-gradient(circle, rgba(0,212,255,0.2), transparent 70%); z-index: 1;"></div>
-            <div id="spline-container" style="width: 100%; height: 100%; position: relative; z-index: 2;"></div>
-            <div id="spline-loading" style="color: #b0bec5; font-family: 'Roboto Mono', monospace; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 3;">Loading Futuristic Robot...</div>
-            <script type="module">
-                import { Application } from 'https://unpkg.com/@splinetool/runtime@latest/build/runtime.js';
-                const container = document.getElementById('spline-container');
-                const canvas = document.createElement('canvas');
-                canvas.style.width = '100%';
-                canvas.style.height = '100%';
-                container.appendChild(canvas);
-                const spline = new Application(canvas);
-                spline.load('https://prod.spline.design/UW8w1e5oP4lXgZxQ/scene.splinecode')
-                    .then(() => {
-                        document.getElementById('spline-loading').style.display = 'none';
-                    })
-                    .catch(err => {
-                        document.getElementById('spline-loading').innerText = 'Error: ' + err.message;
-                    });
-            </script>
-        </div>
+        <script type="module">
+            import { Application } from 'https://unpkg.com/@splinetool/runtime@latest/build/runtime.js';
+            const canvas = document.createElement('canvas');
+            canvas.style.width = '100%';
+            canvas.style.height = '500px';
+            document.getElementById('spline-scene').appendChild(canvas);
+            const spline = new Application(canvas);
+            spline.load('https://prod.spline.design/kZDDjO5HuC9GJUM2/scene.splinecode');
+        </script>
+        <div id="spline-scene"></div>
         """,
-        height=510
+        height=500,
     )
 
 # Interactive Robot with Voiceover
@@ -374,8 +363,7 @@ def main():
 
     st.markdown('</div>', unsafe_allow_html=True)  # Close card
 
-    # Simple Footer with Gopi Chand's Name
-    st.markdown("""
+ st.markdown("""
         <div class="footer">
             <p style="margin: 0; font-family: 'Roboto Mono', monospace; color: #b0bec5; font-size: 0.9em;">
                 Created by <b>GopiChand</b> | AI Data Science Tutor © 2025
