@@ -363,11 +363,13 @@ def main():
 
     st.markdown('</div>', unsafe_allow_html=True)  # Close card
 
-    st.markdown("""
-        <div class="footer">
-            Built with ❤️ by Gopichand | Your AI-Powered Data Science Mentor
-        </div>
-    """, unsafe_allow_html=True)
+ st.markdown("""
+    <hr>
+    <p style="text-align:center; font-size:14px; color:#2ecc71;">
+        🤖 <b>AI Data Science Guru</b> | Conversational AI Tutor powered by <b>Gopi Chand</b> 🚀 <br>
+        💡 Keep Learning, Keep Growing! 💡
+    </p>
+""", unsafe_allow_html=True)
 
 if __name__ == "__main__":
     main()   
