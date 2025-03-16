@@ -13,7 +13,7 @@ import streamlit.components.v1 as components
 # Streamlit Page Config
 st.set_page_config(page_title="AI Data Science Robot", page_icon="🤖", layout="wide")
 
-# Add CSS Instructions Here (Updated with Robot Styling)
+# Add CSS Instructions
 st.markdown("""
     <style>
     .main-title { 
@@ -232,7 +232,7 @@ def text_to_speech(text):
         st.warning(f"Voice module error: {str(e)}")
         return None
 
-# Embed the 3D Spline Scene (Updated Approach)
+# Embed the 3D Spline Scene
 def render_spline_scene():
     components.html(
         """
@@ -363,13 +363,27 @@ def main():
 
     st.markdown('</div>', unsafe_allow_html=True)  # Close card
 
- st.markdown("""
-    <hr>
-    <p style="text-align:center; font-size:14px; color:#2ecc71;">
-        🤖 <b>AI Data Science Guru</b> | Conversational AI Tutor powered by <b>Gopi Chand</b> 🚀 <br>
-        💡 Keep Learning, Keep Growing! 💡
-    </p>
-""", unsafe_allow_html=True)
+    # Quantum Core Footer
+    st.markdown("""
+        <div class="footer">
+            <div style="display: flex; justify-content: center; align-items: center; gap: 10px;">
+                <div style="width: 12px; height: 12px; background: #00d4ff; border-radius: 50%; box-shadow: 0 0 10px #00d4ff; animation: pulseCore 1.5s infinite;"></div>
+                <p style="margin: 0; font-family: 'Orbitron', sans-serif; color: #00d4ff; font-size: 1.2em; text-shadow: 0 0 5px #00d4ff;">
+                    <b>Quantum AI Core</b> | Powered by Grok 3
+                </p>
+            </div>
+            <p style="margin: 5px 0 0; font-family: 'Roboto Mono', monospace; color: #b0bec5; font-size: 0.85em;">
+                Processing at 10⁹ teraflops/sec ⚙️
+            </p>
+            <style>
+                @keyframes pulseCore {
+                    0% { transform: scale(1); box-shadow: 0 0 10px #00d4ff; }
+                    50% { transform: scale(1.2); box-shadow: 0 0 20px #00d4ff; }
+                    100% { transform: scale(1); box-shadow: 0 0 10px #00d4ff; }
+                }
+            </style>
+        </div>
+    """, unsafe_allow_html=True)
 
 if __name__ == "__main__":
-    main()   
+    main()
