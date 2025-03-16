@@ -232,22 +232,40 @@ def text_to_speech(text):
         st.warning(f"Voice module error: {str(e)}")
         return None
 
-# Embed the 3D Spline Scene (Updated Approach)
+# Embed the 3D Spline Scene (Updated for Visibility and Futuristic Robot Theme)
 def render_spline_scene():
     components.html(
         """
-        <script type="module">
-            import { Application } from 'https://unpkg.com/@splinetool/runtime@latest/build/runtime.js';
-            const canvas = document.createElement('canvas');
-            canvas.style.width = '100%';
-            canvas.style.height = '500px';
-            document.getElementById('spline-scene').appendChild(canvas);
-            const spline = new Application(canvas);
-            spline.load('https://prod.spline.design/kZDDjO5HuC9GJUM2/scene.splinecode');
-        </script>
-        <div id="spline-scene"></div>
+        <div style="position: relative; width: 100%; height: 500px; background: #0f172a; border: 3px solid #00d4ff; border-radius: 15px; box-shadow: 0 0 20px rgba(0,212,255,0.5); overflow: hidden;">
+            <div style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: radial-gradient(circle, rgba(0,212,255,0.2), transparent 70%); z-index: 1;"></div>
+            <script type="module">
+                import { Application } from 'https://unpkg.com/@splinetool/runtime@latest/build/runtime.js';
+                const canvas = document.createElement('canvas');
+                canvas.style.width = '100%';
+                canvas.style.height = '100%';
+                canvas.style.position = 'absolute';
+                canvas.style.top = '0';
+                canvas.style.left = '0';
+                canvas.style.zIndex = '2';
+                canvas.style.animation = 'rotateGlow 10s infinite linear';
+                document.currentScript.previousElementSibling.appendChild(canvas);
+                const spline = new Application(canvas);
+                spline.load('https://prod.spline.design/5fPzvNMcvK6pW8gP/scene.splinecode')
+                    .catch(err => {
+                        document.getElementById('spline-fallback').innerText = 'Error loading futuristic robot scene: ' + err.message;
+                    });
+            </script>
+            <div id="spline-fallback" style="color: #b0bec5; font-family: 'Roboto Mono', monospace; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 3;"></div>
+        </div>
+        <style>
+            @keyframes rotateGlow {
+                0% { transform: rotate(0deg) scale(1); box-shadow: 0 0 10px rgba(0,212,255,0.5); }
+                50% { transform: rotate(180deg) scale(1.02); box-shadow: 0 0 20px rgba(0,212,255,0.8); }
+                100% { transform: rotate(360deg) scale(1); box-shadow: 0 0 10px rgba(0,212,255,0.5); }
+            }
+        </style>
         """,
-        height=500,
+        height=510
     )
 
 # Interactive Robot with Voiceover
@@ -363,7 +381,7 @@ def main():
 
     st.markdown('</div>', unsafe_allow_html=True)  # Close card
 
-# Simple Footer with Gopi Chand's Name
+    # Simple Footer with Gopi Chand's Name
     st.markdown("""
         <div class="footer">
             <p style="margin: 0; font-family: 'Roboto Mono', monospace; color: #b0bec5; font-size: 0.9em;">
