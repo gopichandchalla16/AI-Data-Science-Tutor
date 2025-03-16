@@ -367,7 +367,7 @@ def main():
     st.markdown("""
         <div class="footer">
             <p style="margin: 0; font-family: 'Roboto Mono', monospace; color: #b0bec5; font-size: 0.9em;">
-                Created by <b>GopiChand</b> | AI Data Science Tutor © 2025
+                Created by <b>GopiChand</b> | AI Powered Data Science Tutor © 2025
             </p>
         </div>
     """, unsafe_allow_html=True)
