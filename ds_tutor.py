@@ -363,7 +363,8 @@ def main():
 
     st.markdown('</div>', unsafe_allow_html=True)  # Close card
 
- st.markdown("""
+    # Footer (Fixed Indentation)
+    st.markdown("""
         <div class="footer">
             <p style="margin: 0; font-family: 'Roboto Mono', monospace; color: #b0bec5; font-size: 0.9em;">
                 Created by <b>GopiChand</b> | AI Data Science Tutor © 2025
