@@ -39,21 +39,9 @@ Spline: 3D interactive scene integration.
 
 HTML/CSS/JavaScript: Custom styling and animations.
 
-Prerequisites
-
-Before running the application, ensure you have the following:
-
-Python 3.8+
-
-Streamlit
-
-A Google Gemini API key (set up via Google Cloud Console)
-
-Git (optional, for cloning the repository)
-
 Usage
 
-Start the App: Launch the app using the command above.
+Start the App: start the app using the Deployment Link below.
 
 Interact with the Tutor:
 
@@ -74,7 +62,10 @@ Enjoy the Visuals: Interact with the animated robot and explore the 3D Spline sc
 Example Queries
 
 "What is a decision tree?"
+
 "How does gradient descent work?"
+
 "Explain the difference between supervised and unsupervised learning."
+
 The tutor will respond with concise, accurate answers and a robotic flair! 
 
