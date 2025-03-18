@@ -69,3 +69,12 @@ Example Queries
 
 The tutor will respond with concise, accurate answers and a robotic flair! 
 
+
+🌐 Deployment
+
+Deployed on Streamlit Community Cloud for instant access:
+
+Live URL:  
+
+https://datascienceguru.streamlit.app/#104d80cc
+
