@@ -38,3 +38,43 @@ gTTS: Google Text-to-Speech for voice output.
 Spline: 3D interactive scene integration.
 
 HTML/CSS/JavaScript: Custom styling and animations.
+
+Prerequisites
+
+Before running the application, ensure you have the following:
+
+Python 3.8+
+
+Streamlit
+
+A Google Gemini API key (set up via Google Cloud Console)
+
+Git (optional, for cloning the repository)
+
+Usage
+
+Start the App: Launch the app using the command above.
+
+Interact with the Tutor:
+
+Type a data science-related question (e.g., "Explain neural networks") in the input box and click "Transmit!".
+
+The AI tutor responds with a text answer and a voiceover.
+
+Explore Tools:
+
+Random Data Bit: Get a quick data science fact.
+
+Replay Signal: Replay the last audio response.
+
+Reset Core: Clear the conversation history and start fresh.
+
+Enjoy the Visuals: Interact with the animated robot and explore the 3D Spline scene.
+
+Example Queries
+
+"What is a decision tree?"
+"How does gradient descent work?"
+"Explain the difference between supervised and unsupervised learning."
+The tutor will respond with concise, accurate answers and a robotic flair! 
+
